@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { BalanceSummary } from './components/BalanceSummary'
 import { TransactionForm } from './components/TransactionForm'
 import { TransactionList } from './components/TransactionList'
@@ -7,15 +7,19 @@ import { BudgetForm } from './components/BudgetForm'
 import { BudgetList } from './components/BudgetList'
 import { SavingsGoalForm } from './components/SavingsGoalForm'
 import { SavingsGoalList } from './components/SavingsGoalList'
-import type { Budget, SavingsGoal, Transaction } from './db/types'
+import { RecurringRuleForm } from './components/RecurringRuleForm'
+import { RecurringRuleList } from './components/RecurringRuleList'
+import { runDueRecurringRules } from './db/recurringRules'
+import type { Budget, RecurringRule, SavingsGoal, Transaction } from './db/types'
 
-type Tab = 'transactions' | 'categories' | 'budgets' | 'goals'
+type Tab = 'transactions' | 'categories' | 'budgets' | 'goals' | 'payments'
 
 const tabLabels: Record<Tab, string> = {
   transactions: 'Транзакции',
   categories: 'Категории',
   budgets: 'Бюджеты',
   goals: 'Цели',
+  payments: 'Платежи',
 }
 
 function App() {
@@ -23,6 +27,11 @@ function App() {
   const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null)
   const [editingBudget, setEditingBudget] = useState<Budget | null>(null)
   const [editingGoal, setEditingGoal] = useState<SavingsGoal | null>(null)
+  const [editingRule, setEditingRule] = useState<RecurringRule | null>(null)
+
+  useEffect(() => {
+    runDueRecurringRules()
+  }, [])
 
   return (
     <div className="mx-auto flex min-h-svh max-w-md flex-col gap-4 p-4">
@@ -64,6 +73,13 @@ function App() {
         <>
           {!editingGoal && <SavingsGoalForm />}
           <SavingsGoalList editingGoal={editingGoal} onEditingGoalChange={setEditingGoal} />
+        </>
+      )}
+
+      {tab === 'payments' && (
+        <>
+          {!editingRule && <RecurringRuleForm />}
+          <RecurringRuleList editingRule={editingRule} onEditingRuleChange={setEditingRule} />
         </>
       )}
     </div>

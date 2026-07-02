@@ -58,6 +58,23 @@ describe('calculateSpent', () => {
     ]
     expect(calculateSpent(transactions, 1, range)).toBe(0)
   })
+
+  it('без accountId считает расходы по всем счетам (общий бюджет)', () => {
+    const transactions = [
+      tx({ categoryId: 1, accountId: 1, amountKopecks: 3000, date: '2026-07-10' }),
+      tx({ categoryId: 1, accountId: 2, amountKopecks: 4000, date: '2026-07-10' }),
+    ]
+    expect(calculateSpent(transactions, 1, range)).toBe(7000)
+  })
+
+  it('с заданным accountId учитывает расходы только этого счёта', () => {
+    const transactions = [
+      tx({ categoryId: 1, accountId: 1, amountKopecks: 3000, date: '2026-07-10' }),
+      tx({ categoryId: 1, accountId: 2, amountKopecks: 4000, date: '2026-07-10' }),
+    ]
+    expect(calculateSpent(transactions, 1, range, 1)).toBe(3000)
+    expect(calculateSpent(transactions, 1, range, 2)).toBe(4000)
+  })
 })
 
 describe('calculateBudgetProgress', () => {
@@ -109,5 +126,29 @@ describe('calculateBudgetProgress', () => {
 
     expect(progress.percentage).toBe(0)
     expect(progress.isOverLimit).toBe(false)
+  })
+
+  it('с привязкой к счёту учитывает расходы только этого счёта', () => {
+    const b = budget({ limitKopecks: 10000, accountId: 1 })
+    const transactions = [
+      tx({ accountId: 1, amountKopecks: 4000, date: '2026-07-15' }),
+      tx({ accountId: 2, amountKopecks: 9000, date: '2026-07-15' }), // другой счёт — не учитывается
+    ]
+    const progress = calculateBudgetProgress(b, transactions, '2026-07-20')
+
+    expect(progress.spentKopecks).toBe(4000)
+    expect(progress.isOverLimit).toBe(false)
+  })
+
+  it('без привязки к счёту (accountId не задан) суммирует расходы по всем счетам', () => {
+    const b = budget({ limitKopecks: 10000 })
+    const transactions = [
+      tx({ accountId: 1, amountKopecks: 4000, date: '2026-07-15' }),
+      tx({ accountId: 2, amountKopecks: 9000, date: '2026-07-15' }),
+    ]
+    const progress = calculateBudgetProgress(b, transactions, '2026-07-20')
+
+    expect(progress.spentKopecks).toBe(13000)
+    expect(progress.isOverLimit).toBe(true)
   })
 })

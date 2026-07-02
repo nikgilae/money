@@ -45,7 +45,7 @@ export function TransactionList({ editingTransaction, onEditingTransactionChange
     <div className="flex flex-col gap-3">
       <TransactionFilters value={filter} onChange={setFilter} categories={categories ?? []} />
 
-      {transactions?.length === 0 && <p className="text-sm text-gray-500">Транзакций не найдено</p>}
+      {transactions?.length === 0 && <p className="text-sm text-text-muted">Транзакций не найдено</p>}
 
       <ul className="flex flex-col gap-2">
         {transactions?.map((t) => (

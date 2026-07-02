@@ -12,6 +12,9 @@ interface TransactionFiltersProps {
   categories: Category[]
 }
 
+const compactInput =
+  'rounded-xl border border-border bg-surface px-2 py-1 text-sm text-text focus:border-accent focus:outline-none'
+
 export function TransactionFilters({ value, onChange, categories }: TransactionFiltersProps) {
   return (
     <div className="flex flex-wrap gap-2">
@@ -19,20 +22,20 @@ export function TransactionFilters({ value, onChange, categories }: TransactionF
         type="date"
         value={value.from}
         onChange={(e) => onChange({ ...value, from: e.target.value })}
-        className="rounded-md border border-gray-300 px-2 py-1 text-sm"
+        className={compactInput}
         aria-label="Дата с"
       />
       <input
         type="date"
         value={value.to}
         onChange={(e) => onChange({ ...value, to: e.target.value })}
-        className="rounded-md border border-gray-300 px-2 py-1 text-sm"
+        className={compactInput}
         aria-label="Дата по"
       />
       <select
         value={value.categoryId}
         onChange={(e) => onChange({ ...value, categoryId: e.target.value ? Number(e.target.value) : '' })}
-        className="rounded-md border border-gray-300 px-2 py-1 text-sm"
+        className={compactInput}
       >
         <option value="">Все категории</option>
         {categories.map((c) => (
@@ -46,7 +49,7 @@ export function TransactionFilters({ value, onChange, categories }: TransactionF
         <button
           type="button"
           onClick={() => onChange({ from: '', to: '', categoryId: '' })}
-          className="rounded-md bg-gray-100 px-2 py-1 text-sm text-gray-600"
+          className="rounded-xl bg-surface-hover px-2 py-1 text-sm text-text-muted transition-colors hover:bg-surface"
         >
           Сбросить
         </button>

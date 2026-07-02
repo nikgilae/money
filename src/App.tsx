@@ -46,8 +46,8 @@ function App() {
   }, [])
 
   return (
-    <div className="mx-auto flex min-h-svh max-w-md flex-col gap-4 p-4">
-      <h1 className="text-xl font-semibold">Финансовый трекер</h1>
+    <div className="mx-auto flex min-h-svh max-w-md flex-col gap-4 bg-bg p-4 text-text">
+      <h1 className="text-xl font-semibold text-text">Финансовый трекер</h1>
 
       <nav className="grid grid-cols-2 gap-2">
         {(Object.keys(tabLabels) as Tab[]).map((t) => (
@@ -55,8 +55,8 @@ function App() {
             key={t}
             type="button"
             onClick={() => setTab(t)}
-            className={`rounded-md px-3 py-2 text-sm font-medium ${
-              tab === t ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600'
+            className={`rounded-xl px-3 py-2 text-sm font-medium transition-colors ${
+              tab === t ? 'bg-accent text-bg' : 'bg-surface text-text-muted hover:bg-surface-hover'
             }`}
           >
             {tabLabels[t]}

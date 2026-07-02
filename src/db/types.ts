@@ -18,3 +18,22 @@ export interface Category {
   icon?: string
   color?: string
 }
+
+export type BudgetPeriod = 'weekly' | 'monthly' | 'yearly'
+
+export interface Budget {
+  id?: number
+  categoryId: number
+  limitKopecks: number
+  period: BudgetPeriod
+  startDate: string // ISO 8601
+}
+
+export interface SavingsGoal {
+  id?: number
+  name: string
+  targetKopecks: number
+  currentKopecks: number
+  targetDate?: string // ISO 8601
+  createdAt: string
+}

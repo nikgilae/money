@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { useBudgets } from '../hooks/useBudgets'
 import { useCategories } from '../hooks/useCategories'
 import { useTransactions } from '../hooks/useTransactions'
@@ -14,11 +13,15 @@ const periodLabels: Record<Budget['period'], string> = {
   yearly: 'год',
 }
 
-export function BudgetList() {
+interface BudgetListProps {
+  editingBudget: Budget | null
+  onEditingBudgetChange: (budget: Budget | null) => void
+}
+
+export function BudgetList({ editingBudget, onEditingBudgetChange }: BudgetListProps) {
   const budgets = useBudgets()
   const categories = useCategories()
   const transactions = useTransactions()
-  const [editingBudget, setEditingBudget] = useState<Budget | null>(null)
 
   const categoryById = new Map((categories ?? []).map((c) => [c.id, c]))
 
@@ -32,8 +35,8 @@ export function BudgetList() {
     return (
       <BudgetForm
         initialBudget={editingBudget}
-        onSaved={() => setEditingBudget(null)}
-        onCancel={() => setEditingBudget(null)}
+        onSaved={() => onEditingBudgetChange(null)}
+        onCancel={() => onEditingBudgetChange(null)}
       />
     )
   }
@@ -58,7 +61,7 @@ export function BudgetList() {
                 <span className="flex gap-1">
                   <button
                     type="button"
-                    onClick={() => setEditingBudget(b)}
+                    onClick={() => onEditingBudgetChange(b)}
                     className="rounded-md px-2 py-1 text-sm text-gray-500 hover:bg-gray-100"
                   >
                     Изменить

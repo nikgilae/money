@@ -1,13 +1,16 @@
-import { useState } from 'react'
 import { useSavingsGoals } from '../hooks/useSavingsGoals'
 import { deleteSavingsGoal } from '../db/savingsGoals'
 import { SavingsGoalForm } from './SavingsGoalForm'
 import { SavingsGoalListItem } from './SavingsGoalListItem'
 import type { SavingsGoal } from '../db/types'
 
-export function SavingsGoalList() {
+interface SavingsGoalListProps {
+  editingGoal: SavingsGoal | null
+  onEditingGoalChange: (goal: SavingsGoal | null) => void
+}
+
+export function SavingsGoalList({ editingGoal, onEditingGoalChange }: SavingsGoalListProps) {
   const goals = useSavingsGoals()
-  const [editingGoal, setEditingGoal] = useState<SavingsGoal | null>(null)
 
   async function handleDelete(id: number) {
     if (window.confirm('Удалить цель?')) {
@@ -19,8 +22,8 @@ export function SavingsGoalList() {
     return (
       <SavingsGoalForm
         initialGoal={editingGoal}
-        onSaved={() => setEditingGoal(null)}
-        onCancel={() => setEditingGoal(null)}
+        onSaved={() => onEditingGoalChange(null)}
+        onCancel={() => onEditingGoalChange(null)}
       />
     )
   }
@@ -34,7 +37,7 @@ export function SavingsGoalList() {
           <SavingsGoalListItem
             key={g.id}
             goal={g}
-            onEdit={() => setEditingGoal(g)}
+            onEdit={() => onEditingGoalChange(g)}
             onDelete={() => g.id && handleDelete(g.id)}
           />
         ))}

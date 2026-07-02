@@ -1,4 +1,5 @@
 import { getMonthLabel, shiftMonth } from '../lib/monthlySummary'
+import { card } from '../lib/ui'
 
 interface MonthNavigatorProps {
   value: string
@@ -7,21 +8,21 @@ interface MonthNavigatorProps {
 
 export function MonthNavigator({ value, onChange }: MonthNavigatorProps) {
   return (
-    <div className="flex items-center justify-between rounded-lg border border-gray-200 px-3 py-2">
+    <div className={`flex items-center justify-between ${card}`}>
       <button
         type="button"
         onClick={() => onChange(shiftMonth(value, -1))}
         aria-label="Предыдущий месяц"
-        className="rounded-md px-3 py-1 text-gray-500 hover:bg-gray-100"
+        className="rounded-lg px-3 py-1 text-text-muted transition-colors hover:bg-surface-hover hover:text-text"
       >
         ‹
       </button>
-      <span className="text-sm font-medium capitalize">{getMonthLabel(value)}</span>
+      <span className="text-sm font-medium text-text capitalize">{getMonthLabel(value)}</span>
       <button
         type="button"
         onClick={() => onChange(shiftMonth(value, 1))}
         aria-label="Следующий месяц"
-        className="rounded-md px-3 py-1 text-gray-500 hover:bg-gray-100"
+        className="rounded-lg px-3 py-1 text-text-muted transition-colors hover:bg-surface-hover hover:text-text"
       >
         ›
       </button>

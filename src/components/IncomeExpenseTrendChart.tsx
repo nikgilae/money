@@ -1,6 +1,7 @@
 import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import { buildMonthlySeries } from '../lib/monthlySeries'
 import { formatKopecks } from '../lib/money'
+import { card } from '../lib/ui'
 import type { Transaction } from '../db/types'
 
 const MONTHS_COUNT = 6
@@ -8,6 +9,13 @@ const MONTHS_COUNT = 6
 interface IncomeExpenseTrendChartProps {
   transactions: Transaction[]
   monthDate: string
+}
+
+const tooltipStyle = {
+  backgroundColor: 'var(--color-surface)',
+  border: '1px solid var(--color-border)',
+  borderRadius: '0.75rem',
+  color: 'var(--color-text)',
 }
 
 export function IncomeExpenseTrendChart({ transactions, monthDate }: IncomeExpenseTrendChartProps) {
@@ -18,17 +26,17 @@ export function IncomeExpenseTrendChart({ transactions, monthDate }: IncomeExpen
   }))
 
   return (
-    <div className="rounded-lg border border-gray-200 p-4">
-      <h2 className="mb-2 text-sm font-medium text-gray-500">Доходы и расходы по месяцам</h2>
+    <div className={card}>
+      <h2 className="mb-2 text-sm font-medium text-text-muted">Доходы и расходы по месяцам</h2>
       <ResponsiveContainer width="100%" height={260}>
         <BarChart data={data}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="label" fontSize={12} />
-          <YAxis fontSize={12} />
-          <Tooltip formatter={(value) => formatKopecks(Math.round(Number(value) * 100))} />
-          <Legend />
-          <Bar dataKey="incomeRubles" name="Доход" fill="#22c55e" />
-          <Bar dataKey="expenseRubles" name="Расход" fill="#ef4444" />
+          <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
+          <XAxis dataKey="label" fontSize={12} stroke="var(--color-text-muted)" />
+          <YAxis fontSize={12} stroke="var(--color-text-muted)" />
+          <Tooltip formatter={(value) => formatKopecks(Math.round(Number(value) * 100))} contentStyle={tooltipStyle} />
+          <Legend wrapperStyle={{ color: 'var(--color-text-muted)', fontSize: 13 }} />
+          <Bar dataKey="incomeRubles" name="Доход" fill="var(--color-accent)" radius={[4, 4, 0, 0]} />
+          <Bar dataKey="expenseRubles" name="Расход" fill="var(--color-expense)" radius={[4, 4, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
     </div>

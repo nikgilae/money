@@ -1,5 +1,6 @@
 import { calculateMonthlySummary } from '../lib/monthlySummary'
 import { formatKopecks } from '../lib/money'
+import { card, moneyText } from '../lib/ui'
 import type { Transaction } from '../db/types'
 
 interface MonthlySummaryCardProps {
@@ -11,14 +12,14 @@ export function MonthlySummaryCard({ transactions, monthDate }: MonthlySummaryCa
   const { incomeKopecks, expenseKopecks, balanceKopecks } = calculateMonthlySummary(transactions, monthDate)
 
   return (
-    <div className="flex flex-col gap-1 rounded-lg border border-gray-200 p-4">
-      <span className="text-sm text-gray-500">Баланс за месяц</span>
-      <span className={`text-3xl font-semibold ${balanceKopecks < 0 ? 'text-red-600' : 'text-gray-900'}`}>
+    <div className={`flex flex-col gap-1 ${card}`}>
+      <span className="text-sm text-text-muted">Баланс за месяц</span>
+      <span className={`text-3xl font-semibold ${moneyText} ${balanceKopecks < 0 ? 'text-expense' : 'text-text'}`}>
         {formatKopecks(balanceKopecks)}
       </span>
-      <div className="mt-2 flex gap-4 text-sm">
-        <span className="text-green-600">+{formatKopecks(incomeKopecks)}</span>
-        <span className="text-red-600">{expenseKopecks > 0 ? `-${formatKopecks(expenseKopecks)}` : formatKopecks(0)}</span>
+      <div className={`mt-2 flex gap-4 text-sm ${moneyText}`}>
+        <span className="text-accent">+{formatKopecks(incomeKopecks)}</span>
+        <span className="text-expense">{expenseKopecks > 0 ? `-${formatKopecks(expenseKopecks)}` : formatKopecks(0)}</span>
       </div>
     </div>
   )

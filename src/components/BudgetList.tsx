@@ -1,5 +1,6 @@
 import { useBudgets } from '../hooks/useBudgets'
 import { useCategories } from '../hooks/useCategories'
+import { useAccounts } from '../hooks/useAccounts'
 import { useTransactions } from '../hooks/useTransactions'
 import { deleteBudget } from '../db/budgets'
 import { calculateBudgetProgress } from '../lib/budgetProgress'
@@ -22,9 +23,11 @@ interface BudgetListProps {
 export function BudgetList({ editingBudget, onEditingBudgetChange }: BudgetListProps) {
   const budgets = useBudgets()
   const categories = useCategories()
+  const accounts = useAccounts(true)
   const transactions = useTransactions()
 
   const categoryById = new Map((categories ?? []).map((c) => [c.id, c]))
+  const accountById = new Map((accounts ?? []).map((a) => [a.id, a]))
 
   async function handleDelete(id: number) {
     if (window.confirm('Удалить бюджет?')) {
@@ -60,7 +63,9 @@ export function BudgetList({ editingBudget, onEditingBudgetChange }: BudgetListP
                 <span className="text-sm font-medium text-text">
                   {category?.icon ? `${category.icon} ` : ''}
                   {category?.name ?? 'Без категории'}
-                  <span className="ml-1 text-xs font-normal text-text-muted">/ {periodLabels[b.period]}</span>
+                  <span className="ml-1 text-xs font-normal text-text-muted">
+                    / {periodLabels[b.period]} / {b.accountId ? (accountById.get(b.accountId)?.name ?? 'Счёт не найден') : 'Все счета'}
+                  </span>
                 </span>
                 <span className="flex gap-1">
                   <button

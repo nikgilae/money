@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { useCategories } from '../hooks/useCategories'
+import { useAccounts } from '../hooks/useAccounts'
 import { createBudget, updateBudget } from '../db/budgets'
 import { parseRublesToKopecks } from '../lib/money'
 import { todayIso } from '../lib/date'
@@ -15,6 +16,7 @@ interface BudgetFormProps {
 
 export function BudgetForm({ initialBudget, onSaved, onCancel }: BudgetFormProps) {
   const [categoryId, setCategoryId] = useState<number | ''>(initialBudget?.categoryId ?? '')
+  const [accountId, setAccountId] = useState<number | ''>(initialBudget?.accountId ?? '')
   const [limitInput, setLimitInput] = useState(
     initialBudget ? (initialBudget.limitKopecks / 100).toString() : '',
   )
@@ -23,6 +25,7 @@ export function BudgetForm({ initialBudget, onSaved, onCancel }: BudgetFormProps
   const [error, setError] = useState<string | null>(null)
 
   const categories = useCategories('expense')
+  const accounts = useAccounts()
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault()
@@ -38,7 +41,13 @@ export function BudgetForm({ initialBudget, onSaved, onCancel }: BudgetFormProps
       return
     }
 
-    const payload = { categoryId, limitKopecks, period, startDate }
+    const payload = {
+      categoryId,
+      accountId: accountId === '' ? undefined : accountId,
+      limitKopecks,
+      period,
+      startDate,
+    }
 
     if (initialBudget?.id) {
       await updateBudget(initialBudget.id, payload)
@@ -48,6 +57,7 @@ export function BudgetForm({ initialBudget, onSaved, onCancel }: BudgetFormProps
 
     if (!initialBudget) {
       setCategoryId('')
+      setAccountId('')
       setLimitInput('')
     }
     onSaved?.()
@@ -65,6 +75,19 @@ export function BudgetForm({ initialBudget, onSaved, onCancel }: BudgetFormProps
           <option key={c.id} value={c.id}>
             {c.icon ? `${c.icon} ` : ''}
             {c.name}
+          </option>
+        ))}
+      </select>
+
+      <select
+        value={accountId}
+        onChange={(e) => setAccountId(e.target.value ? Number(e.target.value) : '')}
+        className={input}
+      >
+        <option value="">Все счета</option>
+        {accounts?.map((a) => (
+          <option key={a.id} value={a.id}>
+            {a.name}
           </option>
         ))}
       </select>

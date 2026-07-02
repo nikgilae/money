@@ -1,21 +1,9 @@
 import type { BudgetPeriod } from '../db/types'
-import { todayIso } from './date'
+import { todayIso, parseIsoDate, formatIsoDate, lastDayOfMonth } from './date'
 
 export interface DateRange {
   from: string // ISO 8601 date, inclusive
   to: string // ISO 8601 date, inclusive
-}
-
-function parseIsoDate(dateStr: string): { year: number; month: number; day: number } {
-  const [year, month, day] = dateStr.split('-').map(Number)
-  return { year, month, day }
-}
-
-function formatIsoDate(year: number, month: number, day: number): string {
-  const y = year.toString().padStart(4, '0')
-  const m = month.toString().padStart(2, '0')
-  const d = day.toString().padStart(2, '0')
-  return `${y}-${m}-${d}`
 }
 
 /**
@@ -26,8 +14,7 @@ export function getCurrentPeriodRange(period: BudgetPeriod, referenceDate: strin
   const { year, month, day } = parseIsoDate(referenceDate)
 
   if (period === 'monthly') {
-    const lastDay = new Date(Date.UTC(year, month, 0)).getUTCDate()
-    return { from: formatIsoDate(year, month, 1), to: formatIsoDate(year, month, lastDay) }
+    return { from: formatIsoDate(year, month, 1), to: formatIsoDate(year, month, lastDayOfMonth(year, month)) }
   }
 
   if (period === 'yearly') {

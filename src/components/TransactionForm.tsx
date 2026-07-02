@@ -3,11 +3,8 @@ import type { FormEvent } from 'react'
 import { useCategories } from '../hooks/useCategories'
 import { createTransaction, updateTransaction } from '../db/transactions'
 import { parseRublesToKopecks } from '../lib/money'
+import { todayIso } from '../lib/date'
 import type { Transaction, TransactionType } from '../db/types'
-
-function todayIso(): string {
-  return new Date().toISOString().slice(0, 10)
-}
 
 interface TransactionFormProps {
   initialTransaction?: Transaction

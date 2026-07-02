@@ -58,6 +58,7 @@ async function runDueRecurringRulesInternal(referenceDate: string): Promise<numb
         type: rule.type,
         amountKopecks: rule.amountKopecks,
         categoryId: rule.categoryId,
+        accountId: rule.accountId,
         date,
         note: rule.note,
         recurringRuleId: rule.id,

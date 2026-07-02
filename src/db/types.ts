@@ -56,7 +56,7 @@ export interface RecurringRule {
   type: TransactionType
   amountKopecks: number
   categoryId: number
-  accountId?: number
+  accountId: number
   frequency: RecurringFrequency
   startDate: string // ISO 8601
   nextDueDate: string // ISO 8601

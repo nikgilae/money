@@ -31,7 +31,7 @@ db.version(3).stores({
 db.version(4)
   .stores({
     accounts: '++id',
-    transactions: '++id, type, categoryId, date, accountId',
+    transactions: '++id, type, categoryId, date, accountId, transferPairId',
   })
   .upgrade(async (tx) => {
     const defaultAccountId = await tx.table('accounts').add({

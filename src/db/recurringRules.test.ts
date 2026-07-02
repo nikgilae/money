@@ -88,4 +88,26 @@ describe('runDueRecurringRules', () => {
     const created = await runDueRecurringRules('2026-07-20')
     expect(created).toBe(0)
   })
+
+  it('не дублирует транзакции при параллельном вызове (React 18 StrictMode дважды вызывает эффект монтирования)', async () => {
+    await createRecurringRule({
+      type: 'expense',
+      amountKopecks: 1500,
+      categoryId: 4,
+      frequency: 'monthly',
+      startDate: '2026-05-02',
+      active: true,
+    })
+
+    const [firstRunCount, secondRunCount] = await Promise.all([
+      runDueRecurringRules('2026-07-02'),
+      runDueRecurringRules('2026-07-02'),
+    ])
+
+    // Оба вызова ждут один и тот же in-flight промис, поэтому оба видят
+    // одинаковый результат — 3 пропущенных периода (май/июнь/июль), не 6.
+    expect(firstRunCount).toBe(3)
+    expect(secondRunCount).toBe(3)
+    expect(await listTransactions()).toHaveLength(3)
+  })
 })

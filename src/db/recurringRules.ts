@@ -21,12 +21,28 @@ export async function listRecurringRules(activeOnly?: boolean) {
   return activeOnly ? rules.filter((r) => r.active) : rules
 }
 
+// Защита от повторного запуска: React 18 StrictMode дважды вызывает эффект
+// монтирования в dev-режиме, а без гарда это привело бы к двойной генерации
+// транзакций (обе асинхронные вызовы читают одинаковый nextDueDate до того,
+// как первый успевает его сдвинуть). Конкурентные вызовы ждут один и тот же
+// промис вместо того, чтобы независимо читать-и-писать.
+let inFlightRun: Promise<number> | null = null
+
+export function runDueRecurringRules(referenceDate: string = todayIso()): Promise<number> {
+  if (!inFlightRun) {
+    inFlightRun = runDueRecurringRulesInternal(referenceDate).finally(() => {
+      inFlightRun = null
+    })
+  }
+  return inFlightRun
+}
+
 /**
  * Для каждого активного правила с наступившим nextDueDate создаёт по
  * транзакции на каждый пропущенный период и сдвигает nextDueDate вперёд.
  * Возвращает число созданных транзакций.
  */
-export async function runDueRecurringRules(referenceDate: string = todayIso()): Promise<number> {
+async function runDueRecurringRulesInternal(referenceDate: string): Promise<number> {
   const allRules = await db.recurringRules.toArray()
   const rules = allRules.filter((r) => r.active)
   let createdCount = 0

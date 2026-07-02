@@ -43,7 +43,11 @@ export function AccountCarousel() {
               <div className={`flex flex-col gap-1 ${card}`}>
                 <span className="flex items-center gap-2 text-sm text-text-muted">
                   <span className="truncate">{a.name}</span>
-                  {a.isPrimary && <span className="shrink-0 text-xs text-accent">★ Основной</span>}
+                  {a.isPrimary && (
+                    <span className="shrink-0 text-accent" title="Основной счёт" aria-label="Основной счёт">
+                      ★
+                    </span>
+                  )}
                 </span>
                 <span className={`text-2xl font-semibold ${moneyText} ${balance < 0 ? 'text-expense' : 'text-text'}`}>
                   {formatKopecks(balance)}

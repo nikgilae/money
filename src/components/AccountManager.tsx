@@ -36,7 +36,11 @@ export function AccountManager() {
               <span className="flex flex-col">
                 <span className="flex flex-wrap items-center gap-x-2 text-sm font-medium text-text">
                   {a.name}
-                  {a.isPrimary && <span className="text-xs text-accent">★ Основной</span>}
+                  {a.isPrimary && (
+                    <span className="text-accent" title="Основной счёт" aria-label="Основной счёт">
+                      ★
+                    </span>
+                  )}
                   {a.archived && <span className="text-xs text-text-muted">архив</span>}
                 </span>
                 <span className={`text-xs text-text-muted ${moneyText}`}>{formatKopecks(balance)}</span>

@@ -1,13 +1,24 @@
-export type TransactionType = 'income' | 'expense'
+export type TransactionType = 'income' | 'expense' | 'transfer'
+
+export interface Account {
+  id?: number
+  name: string
+  initialBalanceKopecks: number
+  color?: string
+  archived?: boolean
+  createdAt: string
+}
 
 export interface Transaction {
   id?: number
   type: TransactionType
   amountKopecks: number
-  categoryId: number
+  accountId: number
+  categoryId?: number // необязательно для transfer
   date: string // ISO 8601
   note?: string
   recurringRuleId?: number
+  transferPairId?: number // id "исходящей" ноги перевода — общий для обеих записей пары
   createdAt: string
 }
 
@@ -45,6 +56,7 @@ export interface RecurringRule {
   type: TransactionType
   amountKopecks: number
   categoryId: number
+  accountId?: number
   frequency: RecurringFrequency
   startDate: string // ISO 8601
   nextDueDate: string // ISO 8601

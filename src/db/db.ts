@@ -60,6 +60,8 @@ db.on('populate', async () => {
   await db.accounts.add({
     name: DEFAULT_ACCOUNT_NAME,
     initialBalanceKopecks: 0,
+    isPrimary: true,
+    sortOrder: 0,
     createdAt: new Date().toISOString(),
   })
 })

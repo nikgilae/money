@@ -6,6 +6,8 @@ export interface Account {
   initialBalanceKopecks: number
   color?: string
   archived?: boolean
+  isPrimary?: boolean // какой счёт открывается первым в карусели
+  sortOrder?: number // порядок карточек в карусели
   createdAt: string
 }
 
@@ -35,6 +37,7 @@ export type BudgetPeriod = 'weekly' | 'monthly' | 'yearly'
 export interface Budget {
   id?: number
   categoryId: number
+  accountId?: number // не задано — бюджет общий по всем счетам
   limitKopecks: number
   period: BudgetPeriod
   startDate: string // ISO 8601

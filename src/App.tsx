@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { BalanceSummary } from './components/BalanceSummary'
+import { AccountCarousel } from './components/AccountCarousel'
 import { TransactionForm } from './components/TransactionForm'
 import { TransferForm } from './components/TransferForm'
 import { TransactionList } from './components/TransactionList'
@@ -71,6 +72,7 @@ function App() {
       {tab === 'transactions' && (
         <>
           <BalanceSummary />
+          <AccountCarousel />
           {!editingTransaction && (
             <>
               <div className="flex gap-2">

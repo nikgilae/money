@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { useCategories } from '../hooks/useCategories'
+import { useAccounts } from '../hooks/useAccounts'
 import { createRecurringRule, updateRecurringRule } from '../db/recurringRules'
 import { parseRublesToKopecks } from '../lib/money'
 import { todayIso } from '../lib/date'
@@ -19,12 +20,18 @@ export function RecurringRuleForm({ initialRule, onSaved, onCancel }: RecurringR
     initialRule ? (initialRule.amountKopecks / 100).toString() : '',
   )
   const [categoryId, setCategoryId] = useState<number | ''>(initialRule?.categoryId ?? '')
+  const [accountId, setAccountId] = useState<number | ''>(initialRule?.accountId ?? '')
   const [frequency, setFrequency] = useState<RecurringFrequency>(initialRule?.frequency ?? 'monthly')
   const [startDate, setStartDate] = useState(initialRule?.startDate ?? todayIso())
   const [note, setNote] = useState(initialRule?.note ?? '')
   const [error, setError] = useState<string | null>(null)
 
   const categories = useCategories(type)
+  const accounts = useAccounts()
+
+  if (accountId === '' && accounts && accounts.length > 0) {
+    setAccountId(accounts[0].id!)
+  }
 
   function handleTypeChange(newType: TransactionType) {
     setType(newType)
@@ -44,12 +51,17 @@ export function RecurringRuleForm({ initialRule, onSaved, onCancel }: RecurringR
       setError('Выберите категорию')
       return
     }
+    if (accountId === '') {
+      setError('Выберите счёт')
+      return
+    }
 
     if (initialRule?.id) {
       await updateRecurringRule(initialRule.id, {
         type,
         amountKopecks,
         categoryId,
+        accountId,
         frequency,
         startDate,
         note: note.trim() || undefined,
@@ -59,6 +71,7 @@ export function RecurringRuleForm({ initialRule, onSaved, onCancel }: RecurringR
         type,
         amountKopecks,
         categoryId,
+        accountId,
         frequency,
         startDate,
         active: true,
@@ -115,6 +128,19 @@ export function RecurringRuleForm({ initialRule, onSaved, onCancel }: RecurringR
           <option key={c.id} value={c.id}>
             {c.icon ? `${c.icon} ` : ''}
             {c.name}
+          </option>
+        ))}
+      </select>
+
+      <select
+        value={accountId}
+        onChange={(e) => setAccountId(e.target.value ? Number(e.target.value) : '')}
+        className={input}
+      >
+        <option value="">Счёт...</option>
+        {accounts?.map((a) => (
+          <option key={a.id} value={a.id}>
+            {a.name}
           </option>
         ))}
       </select>

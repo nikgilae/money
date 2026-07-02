@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { useCategories } from '../hooks/useCategories'
+import { useAccounts } from '../hooks/useAccounts'
 import { createTransaction, updateTransaction } from '../db/transactions'
 import { parseRublesToKopecks } from '../lib/money'
 import { todayIso } from '../lib/date'
@@ -19,11 +20,17 @@ export function TransactionForm({ initialTransaction, onSaved, onCancel }: Trans
     initialTransaction ? (initialTransaction.amountKopecks / 100).toString() : '',
   )
   const [categoryId, setCategoryId] = useState<number | ''>(initialTransaction?.categoryId ?? '')
+  const [accountId, setAccountId] = useState<number | ''>(initialTransaction?.accountId ?? '')
   const [date, setDate] = useState(initialTransaction?.date ?? todayIso())
   const [note, setNote] = useState(initialTransaction?.note ?? '')
   const [error, setError] = useState<string | null>(null)
 
   const categories = useCategories(type)
+  const accounts = useAccounts()
+
+  if (accountId === '' && accounts && accounts.length > 0) {
+    setAccountId(accounts[0].id!)
+  }
 
   function handleTypeChange(newType: TransactionType) {
     setType(newType)
@@ -43,8 +50,12 @@ export function TransactionForm({ initialTransaction, onSaved, onCancel }: Trans
       setError('Выберите категорию')
       return
     }
+    if (accountId === '') {
+      setError('Выберите счёт')
+      return
+    }
 
-    const payload = { type, amountKopecks, categoryId, date, note: note.trim() || undefined }
+    const payload = { type, amountKopecks, categoryId, accountId, date, note: note.trim() || undefined }
 
     if (initialTransaction?.id) {
       await updateTransaction(initialTransaction.id, payload)
@@ -101,6 +112,19 @@ export function TransactionForm({ initialTransaction, onSaved, onCancel }: Trans
           <option key={c.id} value={c.id}>
             {c.icon ? `${c.icon} ` : ''}
             {c.name}
+          </option>
+        ))}
+      </select>
+
+      <select
+        value={accountId}
+        onChange={(e) => setAccountId(e.target.value ? Number(e.target.value) : '')}
+        className={input}
+      >
+        <option value="">Счёт...</option>
+        {accounts?.map((a) => (
+          <option key={a.id} value={a.id}>
+            {a.name}
           </option>
         ))}
       </select>

@@ -3,6 +3,7 @@ import { BalanceSummary } from './components/BalanceSummary'
 import { TransactionForm } from './components/TransactionForm'
 import { TransactionList } from './components/TransactionList'
 import { CategoryManager } from './components/CategoryManager'
+import { AccountManager } from './components/AccountManager'
 import { BudgetForm } from './components/BudgetForm'
 import { BudgetList } from './components/BudgetList'
 import { SavingsGoalForm } from './components/SavingsGoalForm'
@@ -19,10 +20,11 @@ import { useCategories } from './hooks/useCategories'
 import { todayIso } from './lib/date'
 import type { Budget, RecurringRule, SavingsGoal, Transaction } from './db/types'
 
-type Tab = 'transactions' | 'categories' | 'budgets' | 'goals' | 'payments' | 'analytics'
+type Tab = 'transactions' | 'accounts' | 'categories' | 'budgets' | 'goals' | 'payments' | 'analytics'
 
 const tabLabels: Record<Tab, string> = {
   transactions: 'Транзакции',
+  accounts: 'Счета',
   categories: 'Категории',
   budgets: 'Бюджеты',
   goals: 'Цели',
@@ -71,6 +73,8 @@ function App() {
           <TransactionList editingTransaction={editingTransaction} onEditingTransactionChange={setEditingTransaction} />
         </>
       )}
+
+      {tab === 'accounts' && <AccountManager />}
 
       {tab === 'categories' && <CategoryManager />}
 

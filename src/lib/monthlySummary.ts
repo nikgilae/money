@@ -4,6 +4,7 @@ import { addPeriod } from './recurringSchedule'
 import { parseIsoDate } from './date'
 
 const monthFormatter = new Intl.DateTimeFormat('ru-RU', { month: 'long', year: 'numeric', timeZone: 'UTC' })
+const shortMonthFormatter = new Intl.DateTimeFormat('ru-RU', { month: 'short', timeZone: 'UTC' })
 
 export interface MonthlySummary {
   incomeKopecks: number
@@ -34,4 +35,10 @@ export function getMonthLabel(monthDate: string): string {
 /** Сдвигает дату на delta месяцев (может быть отрицательным). */
 export function shiftMonth(monthDate: string, delta: number): string {
   return addPeriod(monthDate, 'monthly', delta)
+}
+
+/** Короткая подпись месяца для оси графика, напр. "июл.". */
+export function getShortMonthLabel(monthDate: string): string {
+  const { year, month, day } = parseIsoDate(monthDate)
+  return shortMonthFormatter.format(new Date(Date.UTC(year, month - 1, day)))
 }

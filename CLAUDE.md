@@ -20,14 +20,25 @@ PWA-приложение для учёта личных финансов, дос
 ## Модель данных (Dexie schema)
 
 ```typescript
+interface Account {
+  id?: number;
+  name: string;
+  initialBalanceKopecks: number;
+  color?: string;
+  archived?: boolean;
+  createdAt: string;
+}
+
 interface Transaction {
   id?: number;
-  type: 'income' | 'expense';
+  type: 'income' | 'expense' | 'transfer';
   amountKopecks: number;
-  categoryId: number;
+  accountId: number;
+  categoryId?: number; // необязательно для transfer
   date: string; // ISO 8601
   note?: string;
   recurringRuleId?: number;
+  transferPairId?: number; // связывает пару записей одного перевода
   createdAt: string;
 }
 

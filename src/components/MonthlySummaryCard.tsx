@@ -18,7 +18,7 @@ export function MonthlySummaryCard({ transactions, monthDate }: MonthlySummaryCa
       </span>
       <div className="mt-2 flex gap-4 text-sm">
         <span className="text-green-600">+{formatKopecks(incomeKopecks)}</span>
-        <span className="text-red-600">-{formatKopecks(expenseKopecks)}</span>
+        <span className="text-red-600">{expenseKopecks > 0 ? `-${formatKopecks(expenseKopecks)}` : formatKopecks(0)}</span>
       </div>
     </div>
   )

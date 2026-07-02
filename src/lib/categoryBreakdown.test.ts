@@ -6,6 +6,7 @@ function tx(overrides: Partial<Transaction>): Transaction {
   return {
     type: 'expense',
     amountKopecks: 0,
+    accountId: 1,
     categoryId: 1,
     date: '2026-07-15',
     createdAt: '2026-07-15T00:00:00.000Z',
@@ -44,6 +45,14 @@ describe('expensesByCategory', () => {
 
   it('исключает доходы', () => {
     const transactions = [tx({ type: 'income', categoryId: 1, amountKopecks: 5000, date: '2026-07-05' })]
+    expect(expensesByCategory(transactions, range, categories)).toEqual([])
+  })
+
+  it('исключает переводы между счетами', () => {
+    const transactions = [
+      tx({ type: 'transfer', categoryId: undefined, accountId: 1, amountKopecks: -5000, date: '2026-07-05' }),
+      tx({ type: 'transfer', categoryId: undefined, accountId: 2, amountKopecks: 5000, date: '2026-07-05' }),
+    ]
     expect(expensesByCategory(transactions, range, categories)).toEqual([])
   })
 

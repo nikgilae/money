@@ -21,7 +21,9 @@ export function expensesByCategory(
 
   for (const t of transactions) {
     if (t.type !== 'expense' || t.date < range.from || t.date > range.to) continue
-    totals.set(t.categoryId, (totals.get(t.categoryId) ?? 0) + t.amountKopecks)
+    // categoryId обязателен для expense — необязателен он только у transfer, отфильтрованных выше
+    const categoryId = t.categoryId!
+    totals.set(categoryId, (totals.get(categoryId) ?? 0) + t.amountKopecks)
   }
 
   return [...totals.entries()]

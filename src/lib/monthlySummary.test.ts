@@ -6,6 +6,7 @@ function tx(overrides: Partial<Transaction>): Transaction {
   return {
     type: 'expense',
     amountKopecks: 0,
+    accountId: 1,
     categoryId: 1,
     date: '2026-07-15',
     createdAt: '2026-07-15T00:00:00.000Z',
@@ -53,6 +54,19 @@ describe('calculateMonthlySummary', () => {
       tx({ type: 'expense', amountKopecks: 5000, date: '2026-07-02' }),
     ]
     expect(calculateMonthlySummary(transactions, '2026-07-15').balanceKopecks).toBe(-4000)
+  })
+
+  it('исключает переводы между счетами из доходов и расходов', () => {
+    const transactions = [
+      tx({ type: 'income', amountKopecks: 100000, date: '2026-07-01' }),
+      tx({ type: 'transfer', categoryId: undefined, accountId: 1, amountKopecks: -30000, date: '2026-07-05' }),
+      tx({ type: 'transfer', categoryId: undefined, accountId: 2, amountKopecks: 30000, date: '2026-07-05' }),
+    ]
+    expect(calculateMonthlySummary(transactions, '2026-07-15')).toEqual({
+      incomeKopecks: 100000,
+      expenseKopecks: 0,
+      balanceKopecks: 100000,
+    })
   })
 })
 

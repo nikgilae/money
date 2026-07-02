@@ -5,11 +5,50 @@ import type { Category, Transaction } from '../db/types'
 interface TransactionListItemProps {
   transaction: Transaction
   category?: Category
+  counterpartAccountName?: string
   onClick: () => void
   onDelete: () => void
 }
 
-export function TransactionListItem({ transaction, category, onClick, onDelete }: TransactionListItemProps) {
+export function TransactionListItem({
+  transaction,
+  category,
+  counterpartAccountName,
+  onClick,
+  onDelete,
+}: TransactionListItemProps) {
+  if (transaction.type === 'transfer') {
+    const isOutgoing = transaction.amountKopecks < 0
+    const label = counterpartAccountName
+      ? isOutgoing
+        ? `Перевод → ${counterpartAccountName}`
+        : `Перевод ← ${counterpartAccountName}`
+      : 'Перевод'
+    const sign = isOutgoing ? '' : '+'
+
+    return (
+      <li className="flex items-center justify-between gap-2 rounded-xl border border-border bg-surface/50 px-3 py-2">
+        <span className="flex flex-1 items-center gap-2">
+          <span aria-hidden="true">⇄</span>
+          <span className="flex-1">
+            <span className="block text-sm font-medium text-text">{label}</span>
+            <span className="block text-xs text-text-muted">
+              {transaction.date}
+              {transaction.note ? ` · ${transaction.note}` : ''}
+            </span>
+          </span>
+          <span className={`font-medium text-text ${moneyText}`}>
+            {sign}
+            {formatKopecks(transaction.amountKopecks)}
+          </span>
+        </span>
+        <button type="button" onClick={onDelete} aria-label="Удалить перевод" className={ghostIconButton}>
+          ✕
+        </button>
+      </li>
+    )
+  }
+
   const amountColor = transaction.type === 'income' ? 'text-accent' : 'text-expense'
   const sign = transaction.type === 'income' ? '+' : '-'
 

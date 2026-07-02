@@ -6,6 +6,7 @@ function tx(overrides: Partial<Transaction>): Transaction {
   return {
     type: 'expense',
     amountKopecks: 0,
+    accountId: 1,
     categoryId: 1,
     date: '2026-07-15',
     createdAt: '2026-07-15T00:00:00.000Z',

@@ -53,6 +53,7 @@ function rule(overrides: Partial<RecurringRule>): RecurringRule {
     type: 'expense',
     amountKopecks: 50000,
     categoryId: 1,
+    accountId: 1,
     frequency: 'monthly',
     startDate: '2026-01-15',
     nextDueDate: '2026-01-15',

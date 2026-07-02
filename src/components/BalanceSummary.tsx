@@ -18,7 +18,7 @@ export function BalanceSummary() {
       </span>
       <div className="mt-2 flex gap-4 text-sm">
         <span className="text-green-600">+{formatKopecks(income)}</span>
-        <span className="text-red-600">-{formatKopecks(expense)}</span>
+        <span className="text-red-600">{expense > 0 ? `-${formatKopecks(expense)}` : formatKopecks(0)}</span>
       </div>
     </div>
   )

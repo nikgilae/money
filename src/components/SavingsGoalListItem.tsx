@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { depositToGoal, withdrawFromGoal } from '../db/savingsGoals'
 import { parseRublesToKopecks } from '../lib/money'
 import { SavingsGoalProgress } from './SavingsGoalProgress'
+import { ghostIconButton } from '../lib/ui'
 import type { SavingsGoal } from '../db/types'
 
 interface SavingsGoalListItemProps {
@@ -41,21 +42,21 @@ export function SavingsGoalListItem({ goal, onEdit, onDelete }: SavingsGoalListI
   }
 
   return (
-    <li className="flex flex-col gap-2 rounded-md border border-gray-100 px-3 py-2">
+    <li className="flex flex-col gap-2 rounded-xl border border-border bg-surface/50 px-3 py-2">
       <div className="flex items-center justify-between">
-        <span className="text-sm font-medium">
+        <span className="text-sm font-medium text-text">
           {goal.name}
-          {goal.targetDate && <span className="ml-1 text-xs font-normal text-gray-400">до {goal.targetDate}</span>}
+          {goal.targetDate && <span className="ml-1 text-xs font-normal text-text-muted">до {goal.targetDate}</span>}
         </span>
         <span className="flex gap-1">
-          <button type="button" onClick={onEdit} className="rounded-md px-2 py-1 text-sm text-gray-500 hover:bg-gray-100">
-            Изменить
-          </button>
           <button
             type="button"
-            onClick={onDelete}
-            className="rounded-md px-2 py-1 text-sm text-gray-400 hover:bg-red-50 hover:text-red-600"
+            onClick={onEdit}
+            className="rounded-lg px-2 py-1 text-sm text-text-muted transition-colors hover:bg-surface-hover"
           >
+            Изменить
+          </button>
+          <button type="button" onClick={onDelete} className={ghostIconButton}>
             ✕
           </button>
         </span>
@@ -70,16 +71,24 @@ export function SavingsGoalListItem({ goal, onEdit, onDelete }: SavingsGoalListI
           placeholder="Сумма, ₽"
           value={amountInput}
           onChange={(e) => setAmountInput(e.target.value)}
-          className="flex-1 rounded-md border border-gray-300 px-2 py-1 text-sm"
+          className="flex-1 rounded-xl border border-border bg-surface px-2 py-1 text-sm text-text placeholder:text-text-muted focus:border-accent focus:outline-none"
         />
-        <button type="button" onClick={handleDeposit} className="rounded-md bg-green-100 px-2 py-1 text-sm text-green-700">
+        <button
+          type="button"
+          onClick={handleDeposit}
+          className="rounded-xl bg-accent/15 px-2 py-1 text-sm text-accent transition-colors hover:bg-accent/25"
+        >
           Пополнить
         </button>
-        <button type="button" onClick={handleWithdraw} className="rounded-md bg-gray-100 px-2 py-1 text-sm text-gray-600">
+        <button
+          type="button"
+          onClick={handleWithdraw}
+          className="rounded-xl bg-surface-hover px-2 py-1 text-sm text-text-muted transition-colors hover:bg-surface"
+        >
           Списать
         </button>
       </div>
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {error && <p className="text-sm text-expense">{error}</p>}
     </li>
   )
 }

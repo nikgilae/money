@@ -30,7 +30,7 @@ export function SavingsGoalList({ editingGoal, onEditingGoalChange }: SavingsGoa
 
   return (
     <div className="flex flex-col gap-3">
-      {goals?.length === 0 && <p className="text-sm text-gray-500">Целей пока нет</p>}
+      {goals?.length === 0 && <p className="text-sm text-text-muted">Целей пока нет</p>}
 
       <ul className="flex flex-col gap-2">
         {goals?.map((g) => (

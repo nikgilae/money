@@ -4,6 +4,7 @@ import { useCategories } from '../hooks/useCategories'
 import { createRecurringRule, updateRecurringRule } from '../db/recurringRules'
 import { parseRublesToKopecks } from '../lib/money'
 import { todayIso } from '../lib/date'
+import { card, input, primaryButton, secondaryButton } from '../lib/ui'
 import type { RecurringFrequency, RecurringRule, TransactionType } from '../db/types'
 
 interface RecurringRuleFormProps {
@@ -73,13 +74,13 @@ export function RecurringRuleForm({ initialRule, onSaved, onCancel }: RecurringR
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-3 rounded-lg border border-gray-200 p-4">
+    <form onSubmit={handleSubmit} className={`flex flex-col gap-3 ${card}`}>
       <div className="flex gap-2">
         <button
           type="button"
           onClick={() => handleTypeChange('expense')}
-          className={`flex-1 rounded-md px-3 py-2 text-sm font-medium ${
-            type === 'expense' ? 'bg-red-100 text-red-700' : 'bg-gray-100 text-gray-500'
+          className={`flex-1 rounded-xl px-3 py-2 text-sm font-medium transition-colors ${
+            type === 'expense' ? 'bg-expense/15 text-expense' : 'bg-surface-hover text-text-muted'
           }`}
         >
           Расход
@@ -87,8 +88,8 @@ export function RecurringRuleForm({ initialRule, onSaved, onCancel }: RecurringR
         <button
           type="button"
           onClick={() => handleTypeChange('income')}
-          className={`flex-1 rounded-md px-3 py-2 text-sm font-medium ${
-            type === 'income' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'
+          className={`flex-1 rounded-xl px-3 py-2 text-sm font-medium transition-colors ${
+            type === 'income' ? 'bg-accent/15 text-accent' : 'bg-surface-hover text-text-muted'
           }`}
         >
           Доход
@@ -101,13 +102,13 @@ export function RecurringRuleForm({ initialRule, onSaved, onCancel }: RecurringR
         placeholder="Сумма, ₽"
         value={amountInput}
         onChange={(e) => setAmountInput(e.target.value)}
-        className="rounded-md border border-gray-300 px-3 py-2"
+        className={input}
       />
 
       <select
         value={categoryId}
         onChange={(e) => setCategoryId(e.target.value ? Number(e.target.value) : '')}
-        className="rounded-md border border-gray-300 px-3 py-2"
+        className={input}
       >
         <option value="">Категория...</option>
         {categories?.map((c) => (
@@ -118,40 +119,31 @@ export function RecurringRuleForm({ initialRule, onSaved, onCancel }: RecurringR
         ))}
       </select>
 
-      <select
-        value={frequency}
-        onChange={(e) => setFrequency(e.target.value as RecurringFrequency)}
-        className="rounded-md border border-gray-300 px-3 py-2"
-      >
+      <select value={frequency} onChange={(e) => setFrequency(e.target.value as RecurringFrequency)} className={input}>
         <option value="daily">Каждый день</option>
         <option value="weekly">Каждую неделю</option>
         <option value="monthly">Каждый месяц</option>
         <option value="yearly">Каждый год</option>
       </select>
 
-      <input
-        type="date"
-        value={startDate}
-        onChange={(e) => setStartDate(e.target.value)}
-        className="rounded-md border border-gray-300 px-3 py-2"
-      />
+      <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className={input} />
 
       <input
         type="text"
         placeholder="Заметка (необязательно)"
         value={note}
         onChange={(e) => setNote(e.target.value)}
-        className="rounded-md border border-gray-300 px-3 py-2"
+        className={input}
       />
 
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {error && <p className="text-sm text-expense">{error}</p>}
 
       <div className="flex gap-2">
-        <button type="submit" className="flex-1 rounded-md bg-blue-600 px-3 py-2 font-medium text-white">
+        <button type="submit" className={`flex-1 ${primaryButton}`}>
           {initialRule ? 'Сохранить' : 'Добавить'}
         </button>
         {onCancel && (
-          <button type="button" onClick={onCancel} className="rounded-md bg-gray-100 px-3 py-2 text-gray-600">
+          <button type="button" onClick={onCancel} className={secondaryButton}>
             Отмена
           </button>
         )}

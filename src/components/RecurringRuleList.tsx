@@ -4,6 +4,7 @@ import { deleteRecurringRule, updateRecurringRule } from '../db/recurringRules'
 import { formatKopecks } from '../lib/money'
 import { todayIso } from '../lib/date'
 import { RecurringRuleForm } from './RecurringRuleForm'
+import { ghostIconButton, moneyText } from '../lib/ui'
 import type { RecurringFrequency, RecurringRule } from '../db/types'
 
 const frequencyLabels: Record<RecurringFrequency, string> = {
@@ -49,7 +50,7 @@ export function RecurringRuleList({ editingRule, onEditingRuleChange }: Recurrin
 
   return (
     <div className="flex flex-col gap-3">
-      {sortedRules.length === 0 && <p className="text-sm text-gray-500">Правил повторения пока нет</p>}
+      {sortedRules.length === 0 && <p className="text-sm text-text-muted">Правил повторения пока нет</p>}
 
       <ul className="flex flex-col gap-2">
         {sortedRules.map((r) => {
@@ -57,24 +58,24 @@ export function RecurringRuleList({ editingRule, onEditingRuleChange }: Recurrin
           const isOverdue = r.active && r.nextDueDate < today
 
           return (
-            <li key={r.id} className="flex flex-col gap-1 rounded-md border border-gray-100 px-3 py-2">
+            <li key={r.id} className="flex flex-col gap-1 rounded-xl border border-border bg-surface/50 px-3 py-2">
               <div className="flex items-center justify-between">
-                <span className="text-sm font-medium">
+                <span className="text-sm font-medium text-text">
                   {category?.icon ? `${category.icon} ` : ''}
                   {category?.name ?? 'Без категории'}
-                  {!r.active && <span className="ml-1 text-xs font-normal text-gray-400">(на паузе)</span>}
+                  {!r.active && <span className="ml-1 text-xs font-normal text-text-muted">(на паузе)</span>}
                 </span>
-                <span className={`text-sm font-medium ${r.type === 'income' ? 'text-green-600' : 'text-red-600'}`}>
+                <span className={`text-sm font-medium ${moneyText} ${r.type === 'income' ? 'text-accent' : 'text-expense'}`}>
                   {r.type === 'income' ? '+' : '-'}
                   {formatKopecks(r.amountKopecks)}
                 </span>
               </div>
 
-              <div className="flex items-center justify-between text-xs text-gray-500">
+              <div className="flex items-center justify-between text-xs text-text-muted">
                 <span>
                   {frequencyLabels[r.frequency]} ·{' '}
                   {isOverdue ? (
-                    <span className="font-medium text-red-600">Просрочено ({r.nextDueDate})</span>
+                    <span className="font-medium text-expense">Просрочено ({r.nextDueDate})</span>
                   ) : (
                     <>след. платёж {r.nextDueDate}</>
                   )}
@@ -85,22 +86,18 @@ export function RecurringRuleList({ editingRule, onEditingRuleChange }: Recurrin
                 <button
                   type="button"
                   onClick={() => handleToggleActive(r)}
-                  className="rounded-md px-2 py-1 text-sm text-gray-500 hover:bg-gray-100"
+                  className="rounded-lg px-2 py-1 text-sm text-text-muted transition-colors hover:bg-surface-hover"
                 >
                   {r.active ? 'Пауза' : 'Возобновить'}
                 </button>
                 <button
                   type="button"
                   onClick={() => onEditingRuleChange(r)}
-                  className="rounded-md px-2 py-1 text-sm text-gray-500 hover:bg-gray-100"
+                  className="rounded-lg px-2 py-1 text-sm text-text-muted transition-colors hover:bg-surface-hover"
                 >
                   Изменить
                 </button>
-                <button
-                  type="button"
-                  onClick={() => r.id && handleDelete(r.id)}
-                  className="rounded-md px-2 py-1 text-sm text-gray-400 hover:bg-red-50 hover:text-red-600"
-                >
+                <button type="button" onClick={() => r.id && handleDelete(r.id)} className={ghostIconButton}>
                   ✕
                 </button>
               </div>

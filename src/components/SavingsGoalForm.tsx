@@ -2,6 +2,7 @@ import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { createSavingsGoal, updateSavingsGoal } from '../db/savingsGoals'
 import { parseRublesToKopecks } from '../lib/money'
+import { card, input, primaryButton, secondaryButton } from '../lib/ui'
 import type { SavingsGoal } from '../db/types'
 
 interface SavingsGoalFormProps {
@@ -50,13 +51,13 @@ export function SavingsGoalForm({ initialGoal, onSaved, onCancel }: SavingsGoalF
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-3 rounded-lg border border-gray-200 p-4">
+    <form onSubmit={handleSubmit} className={`flex flex-col gap-3 ${card}`}>
       <input
         type="text"
         placeholder="Название цели"
         value={name}
         onChange={(e) => setName(e.target.value)}
-        className="rounded-md border border-gray-300 px-3 py-2"
+        className={input}
       />
 
       <input
@@ -65,24 +66,19 @@ export function SavingsGoalForm({ initialGoal, onSaved, onCancel }: SavingsGoalF
         placeholder="Целевая сумма, ₽"
         value={targetInput}
         onChange={(e) => setTargetInput(e.target.value)}
-        className="rounded-md border border-gray-300 px-3 py-2"
+        className={input}
       />
 
-      <input
-        type="date"
-        value={targetDate}
-        onChange={(e) => setTargetDate(e.target.value)}
-        className="rounded-md border border-gray-300 px-3 py-2"
-      />
+      <input type="date" value={targetDate} onChange={(e) => setTargetDate(e.target.value)} className={input} />
 
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {error && <p className="text-sm text-expense">{error}</p>}
 
       <div className="flex gap-2">
-        <button type="submit" className="flex-1 rounded-md bg-blue-600 px-3 py-2 font-medium text-white">
+        <button type="submit" className={`flex-1 ${primaryButton}`}>
           {initialGoal ? 'Сохранить' : 'Добавить'}
         </button>
         {onCancel && (
-          <button type="button" onClick={onCancel} className="rounded-md bg-gray-100 px-3 py-2 text-gray-600">
+          <button type="button" onClick={onCancel} className={secondaryButton}>
             Отмена
           </button>
         )}

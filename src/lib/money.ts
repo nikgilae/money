@@ -5,9 +5,10 @@ export function formatKopecks(kopecks: number): string {
   const rubles = Math.trunc(abs / 100)
   const fraction = abs % 100
 
-  // toLocaleString использует неразрывный пробел ( ) как разделитель тысяч —
+  // toLocaleString использует неразрывный пробел (U+00A0) как разделитель тысяч —
   // заменяем на обычный пробел для предсказуемости.
-  const rublesFormatted = rubles.toLocaleString('ru-RU').replace(/ /g, ' ')
+  const nonBreakingSpace = String.fromCharCode(160)
+  const rublesFormatted = rubles.toLocaleString('ru-RU').split(nonBreakingSpace).join(' ')
   const fractionFormatted = fraction.toString().padStart(2, '0')
 
   return `${sign}${rublesFormatted},${fractionFormatted} ₽`

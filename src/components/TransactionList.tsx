@@ -9,9 +9,13 @@ import type { Transaction } from '../db/types'
 
 const emptyFilter: TransactionFilterValue = { from: '', to: '', categoryId: '' }
 
-export function TransactionList() {
+interface TransactionListProps {
+  editingTransaction: Transaction | null
+  onEditingTransactionChange: (transaction: Transaction | null) => void
+}
+
+export function TransactionList({ editingTransaction, onEditingTransactionChange }: TransactionListProps) {
   const [filter, setFilter] = useState<TransactionFilterValue>(emptyFilter)
-  const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null)
 
   const transactions = useTransactions({
     from: filter.from || undefined,
@@ -31,8 +35,8 @@ export function TransactionList() {
     return (
       <TransactionForm
         initialTransaction={editingTransaction}
-        onSaved={() => setEditingTransaction(null)}
-        onCancel={() => setEditingTransaction(null)}
+        onSaved={() => onEditingTransactionChange(null)}
+        onCancel={() => onEditingTransactionChange(null)}
       />
     )
   }
@@ -49,7 +53,7 @@ export function TransactionList() {
             key={t.id}
             transaction={t}
             category={categoryById.get(t.categoryId)}
-            onClick={() => setEditingTransaction(t)}
+            onClick={() => onEditingTransactionChange(t)}
             onDelete={() => t.id && handleDelete(t.id)}
           />
         ))}

@@ -3,11 +3,13 @@ import { BalanceSummary } from './components/BalanceSummary'
 import { TransactionForm } from './components/TransactionForm'
 import { TransactionList } from './components/TransactionList'
 import { CategoryManager } from './components/CategoryManager'
+import type { Transaction } from './db/types'
 
 type Tab = 'transactions' | 'categories'
 
 function App() {
   const [tab, setTab] = useState<Tab>('transactions')
+  const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null)
 
   return (
     <div className="mx-auto flex min-h-svh max-w-md flex-col gap-4 p-4">
@@ -37,8 +39,8 @@ function App() {
       {tab === 'transactions' ? (
         <>
           <BalanceSummary />
-          <TransactionForm />
-          <TransactionList />
+          {!editingTransaction && <TransactionForm />}
+          <TransactionList editingTransaction={editingTransaction} onEditingTransactionChange={setEditingTransaction} />
         </>
       ) : (
         <CategoryManager />

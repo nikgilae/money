@@ -9,10 +9,17 @@ import { SavingsGoalForm } from './components/SavingsGoalForm'
 import { SavingsGoalList } from './components/SavingsGoalList'
 import { RecurringRuleForm } from './components/RecurringRuleForm'
 import { RecurringRuleList } from './components/RecurringRuleList'
+import { MonthNavigator } from './components/MonthNavigator'
+import { MonthlySummaryCard } from './components/MonthlySummaryCard'
+import { ExpensesPieChart } from './components/ExpensesPieChart'
+import { IncomeExpenseTrendChart } from './components/IncomeExpenseTrendChart'
 import { runDueRecurringRules } from './db/recurringRules'
+import { useTransactions } from './hooks/useTransactions'
+import { useCategories } from './hooks/useCategories'
+import { todayIso } from './lib/date'
 import type { Budget, RecurringRule, SavingsGoal, Transaction } from './db/types'
 
-type Tab = 'transactions' | 'categories' | 'budgets' | 'goals' | 'payments'
+type Tab = 'transactions' | 'categories' | 'budgets' | 'goals' | 'payments' | 'analytics'
 
 const tabLabels: Record<Tab, string> = {
   transactions: 'Транзакции',
@@ -20,6 +27,7 @@ const tabLabels: Record<Tab, string> = {
   budgets: 'Бюджеты',
   goals: 'Цели',
   payments: 'Платежи',
+  analytics: 'Аналитика',
 }
 
 function App() {
@@ -28,6 +36,10 @@ function App() {
   const [editingBudget, setEditingBudget] = useState<Budget | null>(null)
   const [editingGoal, setEditingGoal] = useState<SavingsGoal | null>(null)
   const [editingRule, setEditingRule] = useState<RecurringRule | null>(null)
+  const [selectedMonth, setSelectedMonth] = useState(todayIso())
+
+  const allTransactions = useTransactions()
+  const allCategories = useCategories()
 
   useEffect(() => {
     runDueRecurringRules()
@@ -80,6 +92,19 @@ function App() {
         <>
           {!editingRule && <RecurringRuleForm />}
           <RecurringRuleList editingRule={editingRule} onEditingRuleChange={setEditingRule} />
+        </>
+      )}
+
+      {tab === 'analytics' && (
+        <>
+          <MonthNavigator value={selectedMonth} onChange={setSelectedMonth} />
+          <MonthlySummaryCard transactions={allTransactions ?? []} monthDate={selectedMonth} />
+          <ExpensesPieChart
+            transactions={allTransactions ?? []}
+            categories={allCategories ?? []}
+            monthDate={selectedMonth}
+          />
+          <IncomeExpenseTrendChart transactions={allTransactions ?? []} monthDate={selectedMonth} />
         </>
       )}
     </div>

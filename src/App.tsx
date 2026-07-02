@@ -6,6 +6,7 @@ import { TransferForm } from './components/TransferForm'
 import { TransactionList } from './components/TransactionList'
 import { CategoryManager } from './components/CategoryManager'
 import { AccountManager } from './components/AccountManager'
+import { AccountSwitcher } from './components/AccountSwitcher'
 import { BudgetForm } from './components/BudgetForm'
 import { BudgetList } from './components/BudgetList'
 import { SavingsGoalForm } from './components/SavingsGoalForm'
@@ -19,6 +20,7 @@ import { IncomeExpenseTrendChart } from './components/IncomeExpenseTrendChart'
 import { runDueRecurringRules } from './db/recurringRules'
 import { useTransactions } from './hooks/useTransactions'
 import { useCategories } from './hooks/useCategories'
+import { useAccounts } from './hooks/useAccounts'
 import { todayIso } from './lib/date'
 import type { Budget, RecurringRule, SavingsGoal, Transaction } from './db/types'
 
@@ -42,9 +44,13 @@ function App() {
   const [editingGoal, setEditingGoal] = useState<SavingsGoal | null>(null)
   const [editingRule, setEditingRule] = useState<RecurringRule | null>(null)
   const [selectedMonth, setSelectedMonth] = useState(todayIso())
+  const [analyticsAccountId, setAnalyticsAccountId] = useState<number | 'all'>('all')
 
-  const allTransactions = useTransactions()
+  const analyticsTransactions = useTransactions({
+    accountId: analyticsAccountId === 'all' ? undefined : analyticsAccountId,
+  })
   const allCategories = useCategories()
+  const allAccounts = useAccounts()
 
   useEffect(() => {
     runDueRecurringRules()
@@ -129,14 +135,15 @@ function App() {
 
       {tab === 'analytics' && (
         <>
+          <AccountSwitcher accounts={allAccounts ?? []} value={analyticsAccountId} onChange={setAnalyticsAccountId} />
           <MonthNavigator value={selectedMonth} onChange={setSelectedMonth} />
-          <MonthlySummaryCard transactions={allTransactions ?? []} monthDate={selectedMonth} />
+          <MonthlySummaryCard transactions={analyticsTransactions ?? []} monthDate={selectedMonth} />
           <ExpensesPieChart
-            transactions={allTransactions ?? []}
+            transactions={analyticsTransactions ?? []}
             categories={allCategories ?? []}
             monthDate={selectedMonth}
           />
-          <IncomeExpenseTrendChart transactions={allTransactions ?? []} monthDate={selectedMonth} />
+          <IncomeExpenseTrendChart transactions={analyticsTransactions ?? []} monthDate={selectedMonth} />
         </>
       )}
     </div>

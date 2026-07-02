@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { BalanceSummary } from './components/BalanceSummary'
 import { TransactionForm } from './components/TransactionForm'
+import { TransferForm } from './components/TransferForm'
 import { TransactionList } from './components/TransactionList'
 import { CategoryManager } from './components/CategoryManager'
 import { AccountManager } from './components/AccountManager'
@@ -34,6 +35,7 @@ const tabLabels: Record<Tab, string> = {
 
 function App() {
   const [tab, setTab] = useState<Tab>('transactions')
+  const [entryMode, setEntryMode] = useState<'transaction' | 'transfer'>('transaction')
   const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null)
   const [editingBudget, setEditingBudget] = useState<Budget | null>(null)
   const [editingGoal, setEditingGoal] = useState<SavingsGoal | null>(null)
@@ -69,7 +71,31 @@ function App() {
       {tab === 'transactions' && (
         <>
           <BalanceSummary />
-          {!editingTransaction && <TransactionForm />}
+          {!editingTransaction && (
+            <>
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => setEntryMode('transaction')}
+                  className={`flex-1 rounded-xl px-3 py-2 text-sm font-medium transition-colors ${
+                    entryMode === 'transaction' ? 'bg-accent text-bg' : 'bg-surface text-text-muted hover:bg-surface-hover'
+                  }`}
+                >
+                  Доход/Расход
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setEntryMode('transfer')}
+                  className={`flex-1 rounded-xl px-3 py-2 text-sm font-medium transition-colors ${
+                    entryMode === 'transfer' ? 'bg-accent text-bg' : 'bg-surface text-text-muted hover:bg-surface-hover'
+                  }`}
+                >
+                  Перевод
+                </button>
+              </div>
+              {entryMode === 'transaction' ? <TransactionForm /> : <TransferForm />}
+            </>
+          )}
           <TransactionList editingTransaction={editingTransaction} onEditingTransactionChange={setEditingTransaction} />
         </>
       )}

@@ -21,7 +21,8 @@ db.version(2).stores({
 })
 
 db.version(3).stores({
-  recurringRules: '++id, active, nextDueDate',
+  // IndexedDB не поддерживает boolean как ключ индекса — active фильтруется в JS
+  recurringRules: '++id, nextDueDate',
 })
 
 db.on('populate', async () => {

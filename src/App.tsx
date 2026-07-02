@@ -58,7 +58,7 @@ function App() {
 
   return (
     <div className="mx-auto flex min-h-svh max-w-md flex-col gap-4 bg-bg p-4 text-text">
-      <h1 className="text-xl font-semibold text-text">Финансовый трекер</h1>
+      <h1 className="text-xl font-semibold text-text">Finance</h1>
 
       <nav className="grid grid-cols-2 gap-2">
         {(Object.keys(tabLabels) as Tab[]).map((t) => (

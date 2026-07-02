@@ -12,7 +12,7 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'apple-touch-icon.png', 'splash/*.png'],
       manifest: {
-        name: 'Финансовый трекер',
+        name: 'Finance',
         short_name: 'Финтрекер',
         description: 'Личный офлайн-трекер доходов и расходов',
         lang: 'ru',

@@ -1,4 +1,5 @@
 import { formatKopecks } from '../lib/money'
+import { moneyText } from '../lib/ui'
 import type { BudgetProgress } from '../lib/budgetProgress'
 
 interface BudgetProgressBarProps {
@@ -11,17 +12,17 @@ export function BudgetProgressBar({ progress }: BudgetProgressBarProps) {
 
   return (
     <div className="flex flex-col gap-1">
-      <div className="h-2 w-full overflow-hidden rounded-full bg-gray-100">
+      <div className="h-2 w-full overflow-hidden rounded-full bg-surface-hover">
         <div
-          className={`h-full rounded-full ${isOverLimit ? 'bg-red-500' : 'bg-blue-500'}`}
+          className={`h-full rounded-full ${isOverLimit ? 'bg-expense' : 'bg-accent'}`}
           style={{ width: `${barWidth}%` }}
         />
       </div>
-      <div className="flex justify-between text-xs text-gray-500">
+      <div className={`flex justify-between text-xs text-text-muted ${moneyText}`}>
         <span>
           {formatKopecks(spentKopecks)} из {formatKopecks(limitKopecks)}
         </span>
-        <span className={isOverLimit ? 'font-medium text-red-600' : undefined}>
+        <span className={isOverLimit ? 'font-medium text-expense' : undefined}>
           {isOverLimit ? `Превышено на ${formatKopecks(overspendKopecks)}` : `${percentage}%`}
         </span>
       </div>

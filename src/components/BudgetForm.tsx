@@ -4,6 +4,7 @@ import { useCategories } from '../hooks/useCategories'
 import { createBudget, updateBudget } from '../db/budgets'
 import { parseRublesToKopecks } from '../lib/money'
 import { todayIso } from '../lib/date'
+import { card, input, primaryButton, secondaryButton } from '../lib/ui'
 import type { Budget, BudgetPeriod } from '../db/types'
 
 interface BudgetFormProps {
@@ -53,11 +54,11 @@ export function BudgetForm({ initialBudget, onSaved, onCancel }: BudgetFormProps
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-3 rounded-lg border border-gray-200 p-4">
+    <form onSubmit={handleSubmit} className={`flex flex-col gap-3 ${card}`}>
       <select
         value={categoryId}
         onChange={(e) => setCategoryId(e.target.value ? Number(e.target.value) : '')}
-        className="rounded-md border border-gray-300 px-3 py-2"
+        className={input}
       >
         <option value="">Категория...</option>
         {categories?.map((c) => (
@@ -74,34 +75,25 @@ export function BudgetForm({ initialBudget, onSaved, onCancel }: BudgetFormProps
         placeholder="Лимит, ₽"
         value={limitInput}
         onChange={(e) => setLimitInput(e.target.value)}
-        className="rounded-md border border-gray-300 px-3 py-2"
+        className={input}
       />
 
-      <select
-        value={period}
-        onChange={(e) => setPeriod(e.target.value as BudgetPeriod)}
-        className="rounded-md border border-gray-300 px-3 py-2"
-      >
+      <select value={period} onChange={(e) => setPeriod(e.target.value as BudgetPeriod)} className={input}>
         <option value="weekly">Неделя</option>
         <option value="monthly">Месяц</option>
         <option value="yearly">Год</option>
       </select>
 
-      <input
-        type="date"
-        value={startDate}
-        onChange={(e) => setStartDate(e.target.value)}
-        className="rounded-md border border-gray-300 px-3 py-2"
-      />
+      <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className={input} />
 
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {error && <p className="text-sm text-expense">{error}</p>}
 
       <div className="flex gap-2">
-        <button type="submit" className="flex-1 rounded-md bg-blue-600 px-3 py-2 font-medium text-white">
+        <button type="submit" className={`flex-1 ${primaryButton}`}>
           {initialBudget ? 'Сохранить' : 'Добавить'}
         </button>
         {onCancel && (
-          <button type="button" onClick={onCancel} className="rounded-md bg-gray-100 px-3 py-2 text-gray-600">
+          <button type="button" onClick={onCancel} className={secondaryButton}>
             Отмена
           </button>
         )}

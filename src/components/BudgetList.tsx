@@ -5,6 +5,7 @@ import { deleteBudget } from '../db/budgets'
 import { calculateBudgetProgress } from '../lib/budgetProgress'
 import { BudgetForm } from './BudgetForm'
 import { BudgetProgressBar } from './BudgetProgressBar'
+import { ghostIconButton } from '../lib/ui'
 import type { Budget } from '../db/types'
 
 const periodLabels: Record<Budget['period'], string> = {
@@ -43,7 +44,7 @@ export function BudgetList({ editingBudget, onEditingBudgetChange }: BudgetListP
 
   return (
     <div className="flex flex-col gap-3">
-      {budgets?.length === 0 && <p className="text-sm text-gray-500">Бюджетов пока нет</p>}
+      {budgets?.length === 0 && <p className="text-sm text-text-muted">Бюджетов пока нет</p>}
 
       <ul className="flex flex-col gap-2">
         {budgets?.map((b) => {
@@ -51,26 +52,25 @@ export function BudgetList({ editingBudget, onEditingBudgetChange }: BudgetListP
           const progress = calculateBudgetProgress(b, transactions ?? [])
 
           return (
-            <li key={b.id} className="flex flex-col gap-2 rounded-md border border-gray-100 px-3 py-2">
+            <li
+              key={b.id}
+              className="flex flex-col gap-2 rounded-xl border border-border bg-surface/50 px-3 py-2"
+            >
               <div className="flex items-center justify-between">
-                <span className="text-sm font-medium">
+                <span className="text-sm font-medium text-text">
                   {category?.icon ? `${category.icon} ` : ''}
                   {category?.name ?? 'Без категории'}
-                  <span className="ml-1 text-xs font-normal text-gray-400">/ {periodLabels[b.period]}</span>
+                  <span className="ml-1 text-xs font-normal text-text-muted">/ {periodLabels[b.period]}</span>
                 </span>
                 <span className="flex gap-1">
                   <button
                     type="button"
                     onClick={() => onEditingBudgetChange(b)}
-                    className="rounded-md px-2 py-1 text-sm text-gray-500 hover:bg-gray-100"
+                    className="rounded-lg px-2 py-1 text-sm text-text-muted transition-colors hover:bg-surface-hover"
                   >
                     Изменить
                   </button>
-                  <button
-                    type="button"
-                    onClick={() => b.id && handleDelete(b.id)}
-                    className="rounded-md px-2 py-1 text-sm text-gray-400 hover:bg-red-50 hover:text-red-600"
-                  >
+                  <button type="button" onClick={() => b.id && handleDelete(b.id)} className={ghostIconButton}>
                     ✕
                   </button>
                 </span>

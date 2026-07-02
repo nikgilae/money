@@ -64,29 +64,31 @@ export function SavingsGoalListItem({ goal, onEdit, onDelete }: SavingsGoalListI
 
       <SavingsGoalProgress goal={goal} />
 
-      <div className="flex gap-2">
+      <div className="flex flex-col gap-2">
         <input
           type="text"
           inputMode="decimal"
           placeholder="Сумма, ₽"
           value={amountInput}
           onChange={(e) => setAmountInput(e.target.value)}
-          className="flex-1 rounded-xl border border-border bg-surface px-2 py-1 text-sm text-text placeholder:text-text-muted focus:border-accent focus:outline-none"
+          className="rounded-xl border border-border bg-surface px-2 py-1 text-sm text-text placeholder:text-text-muted focus:border-accent focus:outline-none"
         />
-        <button
-          type="button"
-          onClick={handleDeposit}
-          className="rounded-xl bg-accent/15 px-2 py-1 text-sm text-accent transition-colors hover:bg-accent/25"
-        >
-          Пополнить
-        </button>
-        <button
-          type="button"
-          onClick={handleWithdraw}
-          className="rounded-xl bg-surface-hover px-2 py-1 text-sm text-text-muted transition-colors hover:bg-surface"
-        >
-          Списать
-        </button>
+        <div className="flex gap-2">
+          <button
+            type="button"
+            onClick={handleDeposit}
+            className="flex-1 rounded-xl bg-accent/15 px-2 py-1 text-sm text-accent transition-colors hover:bg-accent/25"
+          >
+            Пополнить
+          </button>
+          <button
+            type="button"
+            onClick={handleWithdraw}
+            className="flex-1 rounded-xl bg-surface-hover px-2 py-1 text-sm text-text-muted transition-colors hover:bg-surface"
+          >
+            Списать
+          </button>
+        </div>
       </div>
       {error && <p className="text-sm text-expense">{error}</p>}
     </li>

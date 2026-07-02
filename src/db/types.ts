@@ -37,3 +37,17 @@ export interface SavingsGoal {
   targetDate?: string // ISO 8601
   createdAt: string
 }
+
+export type RecurringFrequency = 'daily' | 'weekly' | 'monthly' | 'yearly'
+
+export interface RecurringRule {
+  id?: number
+  type: TransactionType
+  amountKopecks: number
+  categoryId: number
+  frequency: RecurringFrequency
+  startDate: string // ISO 8601
+  nextDueDate: string // ISO 8601
+  active: boolean
+  note?: string
+}

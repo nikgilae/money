@@ -19,6 +19,10 @@ export function deleteTransaction(id: number) {
   return db.transactions.delete(id)
 }
 
+export function countTransactionsForCategory(categoryId: number) {
+  return db.transactions.where('categoryId').equals(categoryId).count()
+}
+
 export async function listTransactions(filter: TransactionFilter = {}): Promise<Transaction[]> {
   const { from, to, categoryId } = filter
   let transactions = await db.transactions.orderBy('date').reverse().toArray()
